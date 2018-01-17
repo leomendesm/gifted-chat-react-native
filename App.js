@@ -1,75 +1,25 @@
-import React,{ Component } from 'react';
-import { View, Text, AsyncStorage } from 'react-native';
-import SocketIOClient from 'socket.io-client/dist/socket.io.js';
-import { GiftedChat } from 'react-native-gifted-chat';
-import KeyboardSpacer from 'react-native-keyboard-spacer'
-const USER_ID = '@userId';
+import React, { Component } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
+import { StackNavigator } from 'react-navigation'
+import { Main, Login, Signup } from './src'
 
-export default class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      messages: [],
-      userId: null
-    };
-    this.determineUser = this.determineUser.bind(this);
-    this.onReceivedMessage = this.onReceivedMessage.bind(this);
-    this.onSend = this.onSend.bind(this);
-    this._storeMessages = this._storeMessages.bind(this);
-    this.socket = SocketIOClient('http://192.168.11.40:3000', { timeout: 30000 });
-    this.socket.on('message', this.onReceivedMessage);
-    this.determineUser();
-  }
+const SimpleApp = StackNavigator({
+  Home: { screen: Login },
+  Signup: { screen: Signup },
+  Chat: { screen: Main },
+});
 
-  determineUser() {
-    AsyncStorage.getItem(USER_ID)
-      .then( userId => {
-        if (!userId) {
-          this.socket.emit('userJoined', null);
-          this.socket.on('userJoined', userId => {
-            AsyncStorage.setItem(USER_ID, userId);
-            this.setState({ userId });
-          });
-        } else {
-          this.socket.emit('userJoined', userId);
-          this.setState({ userId });
-        }
-      })
-      .catch((e) => alert(e));
-  }
-
-  onReceivedMessage(messages) {
-    this._storeMessages(messages);
-  }
-
-  onSend(messages=[]) {
-    this.socket.emit('message', messages[0]);
-    this._storeMessages(messages);
-  }
-  
-  _storeMessages(messages) {
-    this.setState((previousState) => {
-      return {
-        messages: GiftedChat.append(previousState.messages, messages),
-      };
-    });
-  }
-
+export default class App extends React.Component {
   render() {
-    var user = { _id: this.state.userId || -1 };
-    return (
-      <View style={{flex: 1}}>
-        <GiftedChat
-          messages={this.state.messages}
-          onSend={this.onSend}
-          user={user}
-          showUserAvatar={true}
-          renderAvatarOnTop={true}
-          keyboardShouldPersistTaps={'never'}
-        />
-        <KeyboardSpacer />
-      </View>
-    )
+    return <SimpleApp />;
   }
-
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center'
+  }
+});

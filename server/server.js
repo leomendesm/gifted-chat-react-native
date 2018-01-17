@@ -1,6 +1,7 @@
 var express = require('express');
 var http = require('http')
 var socketio = require('socket.io');
+var bcrypt = require('bcrypt-nodejs');
 
 var app = express();
 var server = http.Server(app);
@@ -16,22 +17,35 @@ var chatId = 1
 
 websocket.on('connection', socket => {
     clients[socket.id] = socket;
-    socket.on('userJoined', userId => onUserJoined(userId, socket));
+    socket.on('userJoined', userId => onUserJoined(userId, socket))
     socket.on('message', message => onMessageReceived(message, socket))
+    socket.on('signup', data => onSignup(data, socket))
+    socket.on('signin', data => onSignin(data, socket))
 });
+
+function onSignup(data, socket){
+  const pass = bcrypt.hashSync(data.password)
+
+  const userInfo= {...data, password: pass}
+
+  var user = models.user.create(userInfo).then( user => {
+    socket.emit('signupConfirmed', `${user.id}`)
+  })
+}
+function onSignin(data, socket){
+  var user = models.user.findOne({ where: {username: data.username} }).then(user => {
+    if(user != null && bcrypt.compareSync(data.password, user.password)){
+      socket.emit('signinConfirmed', `${user.id}`)
+    }else{
+      socket.emit('signinConfirmed', -1)
+    }
+  })
+}
 
 function onUserJoined(userId, socket) {
   try {
-    if (!userId) {
-      var user = models.user.create({name: random_name()}).then( user => {
-        socket.emit('userJoined', `${user.id}` );
-        users[socket.id] = user.id;
-        _sendExistingMessages(socket)
-      });
-    } else {
-      users[socket.id] = userId
-      _sendExistingMessages(socket)
-    }
+    users[socket.id] = userId
+    _sendExistingMessages(socket)
   } catch(err) {
     console.log(err)
   }
@@ -75,7 +89,7 @@ function _sendAndSaveMessage(message, socket, fromServer) {
         _id: m.user,
         name: 'React Native'
       }
-  }])
+    }])
   })
 }
 

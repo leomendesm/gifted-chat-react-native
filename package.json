@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "axios": "^0.17.1",
+    "bcrypt-nodejs": "^0.0.3",
     "expo": "^23.0.4",
     "mysql2": "^1.5.1",
     "node-random-name": "^1.0.1",
@@ -34,6 +35,7 @@
     "react-native-keyboard-aware-scroll-view": "^0.4.2",
     "react-native-keyboard-spacer": "^0.4.1",
     "react-native-loading-spinner-overlay": "^0.5.2",
+    "react-navigation": "^1.0.0-beta.27",
     "react-redux": "^5.0.6",
     "redux": "^3.7.2",
     "redux-promise": "^0.5.3",
