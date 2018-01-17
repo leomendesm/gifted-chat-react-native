@@ -42,12 +42,8 @@ export default class Signup extends Component {
   verifyLogin() {
     AsyncStorage.getItem(USER_ID)
       .then( userId => {
-        if (userId) {
-          // this.navigate('Chat')
-          this.setState({verified: true})          
-        }else{
-          this.setState({verified: true})
-        }
+        if (userId) this.navigate('Chat')        
+        else this.setState({verified: true})
       })
       .catch((e) => alert(e));
   }
