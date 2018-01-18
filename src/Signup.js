@@ -31,7 +31,7 @@ export default class Signup extends Component {
     //bind this
     this.determineUser = this.determineUser.bind(this)
     this.verifyLogin = this.verifyLogin.bind(this)
-    this.signup = this.signup.bind(this)
+    this.login = this.login.bind(this)
   }
   
   componentWillMount(){
@@ -61,9 +61,9 @@ export default class Signup extends Component {
     })
   }
 
-  signup() {
+  login() {
     this.keyboard.dismiss()
-    this.navigate('Signup')
+    this.navigate.goBack()
   }
 
   render() {
@@ -91,7 +91,7 @@ export default class Signup extends Component {
             <Text style={{alignSelf: 'center', marginTop: 20, marginBottom: 20}}>or</Text>
 
             <Button
-              onPress={this.signup}
+              onPress={this.login}
               title="Login"
               color="#841584"
             />

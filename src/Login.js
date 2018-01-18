@@ -59,8 +59,9 @@ export default class Login extends Component {
 
   signinCallback(userId) {
     if(userId > 0){
-      AsyncStorage.setItem(USER_ID, userId)
-      this.navigate('Chat')
+      AsyncStorage.setItem(USER_ID, userId).then(() => {
+        this.navigate('Chat')
+      })
     }else{
       Alert.alert('Login Failed', 'Incorrect username or password', [{text: 'OK'}])
     }
