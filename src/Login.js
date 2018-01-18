@@ -46,7 +46,7 @@ export default class Login extends Component {
   verifyLogin() {
     AsyncStorage.getItem(USER_ID)
       .then( userId => {
-        if(userId) this.navigate('Login')  
+        if(userId) this.navigate('Chat')  
         else this.setState({verified: true})
       })
       .catch((e) => alert(e));
